@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { FaGithub, FaLinkedin } from 'react-icons/fa';
-import { ExternalLink, Mail, Code, Layers, Server, Terminal, Sparkles } from 'lucide-react';
+import { ExternalLink, Mail, Code, Layers, Server, Sparkles } from 'lucide-react';
 
 export default function Portfolio() {
   // Your real project data configured for display
@@ -15,7 +15,7 @@ export default function Portfolio() {
     githubFrontend: "https://github.com/SagarUlli/react-jsp-gram",
     liveFrontend: "https://react-jsp-gram.vercel.app/",
     githubBackend: "https://github.com/SagarUlli/spring-boot-jsp-gram",
-    liveBackend: "https://spring-boot-jsp-gram-m5zu.onrender.com/"
+    liveBackend: "https://jsp-gram-backend.onrender.com/"
   };
 
   return (
