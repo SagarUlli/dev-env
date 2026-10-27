@@ -86,6 +86,33 @@ To run the optimized production bundle locally:
 npm run start
 ```
 
+## ⚡ Backend REST API & AI Architecture
+
+The backend uses **Next.js App Router Route Handlers**, **strictly typed TypeScript**, **JWT authentication**, **PostgreSQL**, and **Prisma ORM**. Passwords are hashed with bcrypt before they are stored; plaintext passwords are never returned by the API.
+
+### JWT authentication
+
+| Method | Endpoint | Purpose |
+| --- | --- | --- |
+| `POST` | `/api/auth/register` | Validate an email and password, hash the password, and create a PostgreSQL user. Returns `201`; duplicate email returns `409`. |
+| `POST` | `/api/auth/login` | Verify the password hash and return a signed HS256 JWT with a one-hour lifetime. |
+
+Both endpoints accept JSON with `email` and `password`. Passwords must be between 8 and 72 UTF-8 bytes. The login token is sent to protected endpoints using `Authorization: Bearer <token>`. Set `JWT_SECRET` to a random secret of at least 32 characters.
+
+### PostgreSQL and Prisma
+
+`prisma/schema.prisma` defines the PostgreSQL `User` model (`id`, unique `email`, bcrypt-hashed `password`, and `createdAt`). The Prisma client uses the PostgreSQL driver adapter and reads its connection string from `DATABASE_URL`. Copy `.env.example` to `.env`, configure a PostgreSQL database and secrets, and apply the initial schema with:
+
+```bash
+npx prisma migrate dev --name init
+```
+
+The development and production build scripts generate the typed Prisma client before starting Next.js.
+
+### Protected AI summarization
+
+`POST /api/ai/summarize` requires a valid, unexpired JWT in the `Authorization` header and accepts `{ "text": "..." }` as JSON (up to 20,000 characters). It sends educational content to the OpenAI Chat Completions API and returns `{ "summary": "..." }`. Configure `OPENAI_API_KEY` and optionally `OPENAI_MODEL` (defaults to `gpt-4o-mini`) in the server environment. Requests without a valid token are rejected before the text is sent to the AI provider.
+
 ### Deploying to Vercel
 
 The absolute easiest way to deploy this application is using the [Vercel Platform](https://vercel.com). Simply import your cloned GitHub repository to deploy with zero manual setup.
